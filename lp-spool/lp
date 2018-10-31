@@ -1,0 +1,29 @@
+#!/bin/bash
+
+USR="root"
+
+FILE=$1
+
+DEBT=`grep $USR lp-dir/out-2018.conf | awk 'BEGIN { ORS=" " }; {print $4}'`
+
+if [ $DEBT -gt "0" ]; then
+    echo "Cota insuficiente";
+    exit 1;
+fi
+
+ARQ=`grep $USR lp-dir/out-2018.conf | awk 'BEGIN { ORS=" " }; {print $3}'`
+
+if [ $ARQ -eq "0" ]; then
+    echo "Cota de arquivos insuficiente";
+    exit 1;
+fi
+
+SIZE=`ls -l $FILE | awk 'BEGIN { ORS=" " }; {print $5}'`
+
+PAG=`expr $SIZE / 3600`
+AVAILABLE=`grep $USR lp-dir/out-2018.conf | awk 'BEGIN { ORS=" " }; {print $2}'`
+
+if [ "$PAG" -gt "$AVAILABLE" ]; then
+    echo "Cota de paginas insuficiente";
+fi
+
