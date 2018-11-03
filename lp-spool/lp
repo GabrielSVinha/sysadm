@@ -1,17 +1,19 @@
 #!/bin/bash
 
-USR="root"
+USR=`whoami`
 
 FILE=$1
+# TODO: validate input
+CONF=./lp-dir/$(date +"%b-%Y").conf
 
-DEBT=`grep $USR lp-dir/out-2018.conf | awk 'BEGIN { ORS=" " }; {print $4}'`
+DEBT=`grep $USR $CONF | awk 'BEGIN { ORS=" " }; {print $4}'`
 
 if [ $DEBT -gt "0" ]; then
     echo "Cota insuficiente";
     exit 1;
 fi
 
-ARQ=`grep $USR lp-dir/out-2018.conf | awk 'BEGIN { ORS=" " }; {print $3}'`
+ARQ=`grep $USR $CONF | awk 'BEGIN { ORS=" " }; {print $3}'`
 
 if [ $ARQ -eq "0" ]; then
     echo "Cota de arquivos insuficiente";
@@ -21,9 +23,24 @@ fi
 SIZE=`ls -l $FILE | awk 'BEGIN { ORS=" " }; {print $5}'`
 
 PAG=`expr $SIZE / 3600`
-AVAILABLE=`grep $USR lp-dir/out-2018.conf | awk 'BEGIN { ORS=" " }; {print $2}'`
+AVAILABLE=`grep $USR $CONF | awk 'BEGIN { ORS=" " }; {print $2}'`
 
 if [ "$PAG" -gt "$AVAILABLE" ]; then
     echo "Cota de paginas insuficiente";
+    exit 1;
 fi
 
+# Comentei essa linha pq tava dando erro de impressora não definida
+# Atualizar quando for submeter
+# lp "$@"
+
+if [ "$?" -eq "1" ]; then
+    echo "Unable to print file";
+    exit 1;
+fi
+
+NEWPAG=`grep $USR $CONF | awk -v PAG=$PAG 'BEGIN { ORS=" " }; {print $1, int($2)-int(PAG), int($3)-1, $4}'`
+
+LINE=`grep -nr $USR $CONF | awk 'BEGIN {FS=":";OFS=":"}; {print $1}'`
+
+sed -i "${LINE}s/.*/${NEWPAG}/" $CONF

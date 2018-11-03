@@ -14,5 +14,5 @@ mkdir -p ./lp-dir/
 
 awk -v PAG=$PAG -v ARQ=$ARQ 'BEGIN{FS=":";OFS=":"}{print $1 " " PAG " " ARQ " " 0}' /etc/passwd > ./lp-dir/$(date +"%b-%Y").conf
 
-echo "Installing lp tool"
+echo "Successfully installed lp"
 
