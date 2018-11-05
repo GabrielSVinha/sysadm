@@ -4,7 +4,7 @@ USR=`whoami`
 
 FILE=$1
 # TODO: validate input
-CONF=./lp-dir/$(date +"%b-%Y").conf
+CONF=./lp-dir/config/$(date +"%b-%Y").conf
 
 DEBT=`grep $USR $CONF | awk 'BEGIN { ORS=" " }; {print $4}'`
 
