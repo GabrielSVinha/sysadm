@@ -1,0 +1,12 @@
+#!/bin/bash
+
+MONTH=`date -d "D" '+%mmm'`
+
+echo $MONTH
+
+FILE=$1-$2.conf
+
+
+REPORT_FOLDER="./lp-dir/report"
+
+echo $FILE

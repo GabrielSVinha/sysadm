@@ -1,2 +1,2 @@
-mv ./lp-dir/config/* ./lp-dir/report
+mv ./lp-dir/config/*.conf ./lp-dir/report
 
