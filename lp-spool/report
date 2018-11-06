@@ -2,9 +2,6 @@
 
 . lp-dir/config/limits
 
-echo "page $PAGE_LIMIT"
-echo "arq $FILE_LIMIT"
-
 DATE=`date -d "$2$101" +"%b-%Y"`
 FILE=$DATE.conf
 REPORT_FOLDER="./lp-dir/report"
@@ -14,11 +11,8 @@ if [ -n "$REPORT_FOUND" ];
 then
 	IFS=$'\n'
 	REPORT=`cat $REPORT_FOUND`
-	for i in $REPORT; do
-		#for l in $i; do
-		#	IFS=" "
-		#	echo $l
-		#done;
+	for line in $REPORT; do
+		echo "$line" | awk -v PAGE_LIMIT=$PAGE_LIMIT -v FILE_LIMIT=$FILE_LIMIT '{print $1, int(PAGE_LIMIT)-int($2)+int($4), int(FILE_LIMIT)-int($3)}'
 	done;
 else
 	echo "No report available for date: $DATE"
