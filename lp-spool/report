@@ -1,12 +1,25 @@
 #!/bin/bash
 
-MONTH=`date -d "D" '+%mmm'`
+. lp-dir/config/limits
 
-echo $MONTH
+echo "page $PAGE_LIMIT"
+echo "arq $FILE_LIMIT"
 
-FILE=$1-$2.conf
-
-
+DATE=`date -d "$2$101" +"%b-%Y"`
+FILE=$DATE.conf
 REPORT_FOLDER="./lp-dir/report"
+REPORT_FOUND=`find $REPORT_FOLDER -name $FILE`
 
-echo $FILE
+if [ -n "$REPORT_FOUND" ];
+then
+	IFS=$'\n'
+	REPORT=`cat $REPORT_FOUND`
+	for i in $REPORT; do
+		#for l in $i; do
+		#	IFS=" "
+		#	echo $l
+		#done;
+	done;
+else
+	echo "No report available for date: $DATE"
+fi
