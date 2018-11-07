@@ -1,2 +1,16 @@
-mv ./lp-dir/config/*.conf ./lp-dir/report
+. lp-dir/config/limits
+
+CONFIG_FILE=`find ./lp-dir/config/ -name *.conf`
+
+IFS=$'\n'
+REPORT=`cat $CONFIG_FILE`
+echo $REPORT
+for line in $REPORT; do
+  echo "$line" | awk -v PAGE_LIMIT=$PAGE_LIMIT -v FILE_LIMIT=$FILE_LIMIT '{print $1, int(PAGE_LIMIT)-int($4), int(FILE_LIMIT), 0, '\n'}'
+ 
+done                                                                                                           
+# mv ./lp-dir/config/*.conf ./lp-dir/report
+
+
+# awk -v PAG=$PAGE_LIMIT -v ARQ=$FILE_LIMIT 'BEGIN{FS=":";OFS=":"}{print $1 " " PAG " " ARQ " " 0}' /etc/passwd > ./lp-dir/config/$(date +"%b-%Y").conf
 
