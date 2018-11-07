@@ -6,7 +6,7 @@ ceil() {
         else {return x/1 + 1 }}} ; ceil($1)" | bc
 }
 
-USR=`whoami`
+USR="root"
 
 FILE=$1
 # TODO: validate input
@@ -14,14 +14,14 @@ CONF=./lp-dir/config/$(date +"%b-%Y").conf
 
 DEBT=`grep $USR $CONF | awk 'BEGIN { ORS=" " }; {print $4}'`
 
-if [ $DEBT -gt "0" ]; then
+if [[ $DEBT -gt 0 ]]; then
     echo "Cota insuficiente";
     exit 1;
 fi
 
 ARQ=`grep $USR $CONF | awk 'BEGIN { ORS=" " }; {print $3}'`
 
-if [ $ARQ -eq "0" ]; then
+if [[ $ARQ -eq 0 ]]; then
    echo "Cota de arquivos insuficiente";
    exit 1;
 fi
@@ -32,10 +32,18 @@ FLOAT_PAG=`echo "scale=2; $SIZE / 3600" | bc`
 PAG=`ceil $FLOAT_PAG`
 
 AVAILABLE=`grep $USR $CONF | awk 'BEGIN { ORS=" " }; {print $2}'`
+MARK=`grep $USR $CONF | awk 'BEGIN { ORS=" " }; {print $5}'`
 
-if [ "$PAG" -gt "$AVAILABLE" ]; then
-    echo "Cota de paginas insuficiente";
-    exit 1;
+if [[ $PAG -gt $AVAILABLE ]]; then
+    if [ $MARK == "." ]; then
+        echo "Cota estourada anteriormente";
+        exit 1;
+    fi
+    DIFF=`expr $PAG - $AVAILABLE`
+    echo $DIFF
+    NEWPAG=`grep $USR $CONF | awk -v DIFF=$DIFF 'BEGIN { ORS=" " }; {print $1, 0, int($3)-1, int(DIFF), "."}'`
+else
+    NEWPAG=`grep $USR $CONF | awk -v PAG=$PAG 'BEGIN { ORS=" " }; {print $1, int($2)-int(PAG), int($3)-1, $4, $5}'`
 fi
 
 # Comentei essa linha pq tava dando erro de impressora não definida
@@ -46,8 +54,6 @@ if [ "$?" -eq "1" ]; then
     echo "Unable to print file";
     exit 1;
 fi
-
-NEWPAG=`grep $USR $CONF | awk -v PAG=$PAG 'BEGIN { ORS=" " }; {print $1, int($2)-int(PAG), int($3)-1, $4}'`
 
 LINE=`grep -nr $USR $CONF | awk 'BEGIN {FS=":";OFS=":"}; {print $1}'`
 
