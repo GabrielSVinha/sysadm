@@ -1,5 +1,13 @@
 #!/bin/bash
 
+if [ "$#" -ne 2 ]; then
+    echo "Error: Check parameters..."
+    echo "Executing this command using: ./report [MONTH_NUMBER] [YEAR_NUMBER]"
+    exit 1
+fi
+
+
+
 . lp-dir/config/limits
 
 DATE=`date -d "$2$101" +"%b-%Y"`
