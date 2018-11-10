@@ -6,11 +6,13 @@ ceil() {
         else {return x/1 + 1 }}} ; ceil($1)" | bc
 }
 
-USR="root"
+USR="`whoami`"
 
 FILE=$1
 # TODO: validate input
 CONF=./lp-dir/config/$(date +"%b-%Y").conf
+LOG_FILE=./lp-dir/logs/$(date +"%b-%Y").log
+
 
 DEBT=`grep $USR $CONF | awk 'BEGIN { ORS=" " }; {print $4}'`
 
@@ -58,3 +60,5 @@ fi
 LINE=`grep -nr $USR $CONF | awk 'BEGIN {FS=":";OFS=":"}; {print $1}'`
 
 sed -i "${LINE}s/.*/${NEWPAG}/" $CONF
+
+echo "`date` $USR $FILE $PAG" >> $LOG_FILE

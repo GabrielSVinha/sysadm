@@ -22,10 +22,14 @@ echo "Creating folders..."
 mkdir -p ./lp-dir/
 mkdir -p ./lp-dir/report
 mkdir -p ./lp-dir/config
+mkdir -p ./lp-dir/logs
 
 echo "Setting quota limits..."
 echo "PAGE_LIMIT=$PAG" > ./lp-dir/config/limits
 echo "FILE_LIMIT=$ARQ" >> ./lp-dir/config/limits
+
+echo "Creating log file..."
+touch ./lp-dir/logs/$(date +"%b-%Y").log
 
 echo "Creating configuration file..."
 awk -v PAG=$PAG -v ARQ=$ARQ 'BEGIN{FS=":";OFS=":"}{print $1 " " PAG " " ARQ " " 0}' /etc/passwd > ./lp-dir/config/$(date +"%b-%Y").conf
