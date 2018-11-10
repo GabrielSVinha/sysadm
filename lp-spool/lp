@@ -9,9 +9,10 @@ ceil() {
 USR="`whoami`"
 
 FILE=$1
+ROOT_FOLDER=$HOME/.lp
 # TODO: validate input
-CONF=./lp-dir/config/$(date +"%b-%Y").conf
-LOG_FILE=./lp-dir/logs/$(date +"%b-%Y").log
+CONF=$ROOT_FOLDER/config/$(date +"%b-%Y").conf
+LOG_FILE=$ROOT_FOLDER/logs/$(date +"%b-%Y").log
 
 
 DEBT=`grep $USR $CONF | awk 'BEGIN { ORS=" " }; {print $4}'`

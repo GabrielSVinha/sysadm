@@ -6,13 +6,13 @@ if [ "$#" -ne 2 ]; then
     exit 1
 fi
 
+ROOT_FOLDER=$HOME/.lp
 
-
-. lp-dir/config/limits
+. $ROOT_FOLDER/config/limits
 
 DATE=`date -d "$2$101" +"%b-%Y"`
 FILE=$DATE.conf
-REPORT_FOLDER="./lp-dir/report"
+REPORT_FOLDER="$ROOT_FOLDER/report"
 REPORT_FOUND=`find $REPORT_FOLDER -name $FILE`
 
 if [ -n "$REPORT_FOUND" ];

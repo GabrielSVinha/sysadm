@@ -1,15 +1,20 @@
-. lp-dir/config/limits
+ROOT_FOLDER=$HOME/.lp
+. $ROOT_FOLDER/config/limits
 
-CONFIG_FILE=`find ./lp-dir/config/ -name *.conf`
+CONFIG_FILE=`find $ROOT_FOLDER/config/ -name *.conf`
 
 IFS=$'\n'
 REPORT=`cat $CONFIG_FILE`
 
-mv ./lp-dir/config/*.conf ./lp-dir/report
-touch ./lp-dir/logs/$(date +"%b-%Y").log
+mv $ROOT_FOLDER/config/*.conf $ROOT_FOLDER/report
+touch $ROOT_FOLDER/logs/$(date +"%b-%Y").log
 
 
 for line in $REPORT; do
-  echo "$line" | awk -v PAGE_LIMIT=$PAGE_LIMIT -v FILE_LIMIT=$FILE_LIMIT '{print $1, int(PAGE_LIMIT)-int($4), int(FILE_LIMIT), 0, '\n'}' >> ./lp-dir/config/$(date +"%b-%Y").conf
-
-done                                                                                                           
+  PAG=`echo "$line" | awk 'BEGIN { ORS=" " }; {print $2}'`
+  if [[ $PAG -lt "0" ]];then
+    echo "$line" | awk -v PAGE_LIMIT=$PAGE_LIMIT -v FILE_LIMIT=$FILE_LIMIT '{print $1, int($2)+int(PAGE_LIMIT), int(FILE_LIMIT), 0, $5,'\n'}' >> $HOME/.lp/config/$(date +"%b-%Y").conf
+  else
+    echo "$line" | awk -v PAGE_LIMIT=$PAGE_LIMIT -v FILE_LIMIT=$FILE_LIMIT '{print $1, int(PAGE_LIMIT)-int($4), int(FILE_LIMIT), 0, $5,'\n'}' >> $HOME/.lp/config/$(date +"%b-%Y").conf
+  fi
+done
