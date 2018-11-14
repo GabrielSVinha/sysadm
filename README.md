@@ -6,4 +6,6 @@ Projetos relacionados a disciplina de administração de sistemas do período 20
 
 |Nome|Repositório|
 |---|---|
-|lp com cota|[lp](lp-spool/)|
+|lp com cota|[lp](lp-spool/)m cota|[lp](lp-spool/)|
+|bash accounting|[logging](logging/)|
+

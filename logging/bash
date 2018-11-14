@@ -1,0 +1,34 @@
+#!/bin/bash
+#for env in `printenv`; do
+#    export $env
+#done
+
+printenv > envs
+
+. ./envs
+
+USER=`whoami`
+WORKING_DIR=`pwd`
+HOST=`hostname`
+
+printf "${USER}@${HOST}:${PWD}$ " ;
+
+touch time.log
+while IFS= read -r CMD; do
+    { time $CMD ; } 2> tmp.log
+
+    TIME=`cat tmp.log`
+
+    printf "${USER} (${CMD}) : ${TIME}\n---\n" >> time.log
+
+    rm tmp.log
+
+    USER=`whoami`
+    WORKING_DIR=`pwd`
+    HOST=`hostname`
+
+    printf "${USER}@${HOST}:${PWD}$ " ;
+
+done
+printf "\n";
+
