@@ -1,31 +1,25 @@
 #!/bin/bash
-#for env in `printenv`; do
-#    export $env
-#done
-
-printenv > envs
-
-. ./envs
 
 USER=`whoami`
 WORKING_DIR=`pwd`
 HOST=`hostname`
 
+mkdir -p logs/${USER}
+
 printf "${USER}@${HOST}:${PWD}$ " ;
 
-touch time.log
 while IFS= read -r CMD; do
-    { time $CMD ; } 2> tmp.log
+    
+    if [[ "$CMD" == *"cd"* ]]; then
+        $CMD
+    else
 
-    TIME=`cat tmp.log`
+       /usr/bin/time -o tmp.log -f 'SU' -p $CMD
+       TIME=`cat tmp.log`
 
-    printf "${USER} (${CMD}) : ${TIME}\n---\n" >> time.log
-
-    rm tmp.log
-
-    USER=`whoami`
-    WORKING_DIR=`pwd`
-    HOST=`hostname`
+       printf "${CMD} \n ${TIME} \n---\n" >> logs/${USER}/$(date +"%b-%Y").log
+       rm tmp.log
+    fi
 
     printf "${USER}@${HOST}:${PWD}$ " ;
 
