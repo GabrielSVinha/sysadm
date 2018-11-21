@@ -1,24 +1,35 @@
 #!/bin/bash
 
+check_built_in () {
+  [[ -n "${BUILT_IN_CMD[$1]}" ]] && printf '1'
+}
+
+declare -A BUILT_IN_CMD=( 
+ ['break']=1  ['cd']=1  ['continue']=1 ['echo']=1 ['eval']=1 ['exec']=1 ['exit']=1 ['export']=1 ['hash']=1 ['pwd']=1 ['read']=1
+)
 USER=`whoami`
 WORKING_DIR=`pwd`
 HOST=`hostname`
+LOGS_FOLDER=$HOME/logs
 
-mkdir -p logs/${USER}
+mkdir -p $LOGS_FOLDER/${USER}
 
 printf "${USER}@${HOST}:${PWD}$ " ;
 
+
 while IFS= read -r CMD; do
+
+    b=`check_built_in $CMD` 
     
-    if [[ "$CMD" == *"cd"* ]]; then
-        $CMD
+    if [[ "$b" == 1 ]]; then 
+      eval $CMD 
     else
+      /usr/bin/time -o $LOGS_FOLDER/tmp.log -f 'SU' -p $CMD
+    
+      TIME=`cat $LOGS_FOLDER/tmp.log`
 
-       /usr/bin/time -o tmp.log -f 'SU' -p $CMD
-       TIME=`cat tmp.log`
-
-       printf "${CMD} \n ${TIME} \n---\n" >> logs/${USER}/$(date +"%b-%Y").log
-       rm tmp.log
+      printf "${CMD} \n ${TIME} \n---\n" >> ${LOGS_FOLDER}/${USER}/$(date +"%b-%Y").log
+      rm $LOGS_FOLDER/tmp.log
     fi
 
     printf "${USER}@${HOST}:${PWD}$ " ;
