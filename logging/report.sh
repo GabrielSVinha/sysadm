@@ -33,7 +33,7 @@ then
 
   #Histograma de comandos
 
-  awk -vRS="~" '{print $1}' $REPORT_FOUND >> $REPORT_FOLDER/cmd-tmp.txt
+  awk -vRS="~" '{if ($1 != "") {print $1}}' $REPORT_FOUND >> $REPORT_FOLDER/cmd-tmp.txt
   sort -n $REPORT_FOLDER/cmd-tmp.txt | uniq -c
   rm $REPORT_FOLDER/cmd-tmp.txt
 else
