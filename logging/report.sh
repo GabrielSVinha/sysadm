@@ -19,7 +19,17 @@ REPORT_FOUND=`find $REPORT_FOLDER -name $FILE`
 if [ -n "$REPORT_FOUND" ];
 then
   REPORT=`cat $REPORT_FOUND`
-  awk -vRS="~" '{TIME_SYS+=int($7); TIME_USR+=int($5); TIME_TOTAL+=int($3); COMMANDS+=$1;} END  {print "Tempo total de uso: " TIME_TOTAL; print "Tempo total sys: " TIME_SYS; print "Tempo total user: " TIME_USR}' $REPORT_FOUND
+  awk -vRS="~" '{for (i =1; i<=NF; i++) {
+                   if ($i == "real")
+                     {BASE_INDEX=i;};
+                 }; 
+                 SYS_INDEX=BASE_INDEX+5;
+                 USER_INDEX=BASE_INDEX+3;
+                 REAL_INDEX=BASE_INDEX+1;
+                 TIME_SYS+=int($SYS_INDEX);
+                 TIME_USR+=int($USER_INDEX); 
+                 TIME_TOTAL+=int($REAL_INDEX); 
+                COMMANDS+=$1;} END  {print "Tempo total de uso: " TIME_TOTAL; print "Tempo total sys: " TIME_SYS; print "Tempo total user: " TIME_USR}' $REPORT_FOUND
 
   #Histograma de comandos
 
