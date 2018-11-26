@@ -19,7 +19,13 @@ REPORT_FOUND=`find $REPORT_FOLDER -name $FILE`
 if [ -n "$REPORT_FOUND" ];
 then
   REPORT=`cat $REPORT_FOUND`
-  echo `awk -vRS="-" '{TIME_SYS+=int($7); TIME_USR+=int($5); TIME_TOTAL+=int($3)} END  {print "Tempo total de uso: " TIME_TOTAL, "Tempo total sys: " TIME_SYS, "Tempo total user: " TIME_USR}' $REPORT_FOUND`
+  awk -vRS="-" '{TIME_SYS+=int($7); TIME_USR+=int($5); TIME_TOTAL+=int($3); COMMANDS+=$1;} END  {print "Tempo total de uso: " TIME_TOTAL; print "Tempo total sys: " TIME_SYS; print "Tempo total user: " TIME_USR}' $REPORT_FOUND
+
+  #Histograma de comandos
+
+  awk -vRS="-" '{print $1}' $REPORT_FOUND >> $REPORT_FOLDER/cmd-tmp.txt
+  sort -n $REPORT_FOLDER/cmd-tmp.txt | uniq -c
+  rm $REPORT_FOLDER/cmd-tmp.txt
 else
   echo "No report available for date: $DATE"
 fi
