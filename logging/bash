@@ -29,7 +29,7 @@ while IFS= read -r CMD; do
     
       TIME=`cat $LOGS_FOLDER/tmp.log`
 
-      printf "${CMD} \n${TIME} \n-\n" >> ${LOGS_FOLDER}/${USER}/$(date +"%b-%Y").log
+      printf "${CMD} \n${TIME} \n~\n" >> ${LOGS_FOLDER}/${USER}/$(date +"%b-%Y").log
       rm $LOGS_FOLDER/tmp.log
     fi
 
