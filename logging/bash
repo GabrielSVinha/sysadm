@@ -11,7 +11,7 @@ declare -A BUILT_IN_CMD=(
 USER=`whoami`
 WORKING_DIR=`pwd`
 HOST=`hostname`
-LOGS_FOLDER=$HOME/logs
+LOGS_FOLDER=$HOME/.logs
 
 mkdir -p $LOGS_FOLDER/${USER}
 
@@ -29,7 +29,7 @@ while IFS= read -r CMD; do
     
       TIME=`cat $LOGS_FOLDER/tmp.log`
 
-      printf "${CMD} \n ${TIME} \n---\n" >> ${LOGS_FOLDER}/${USER}/$(date +"%b-%Y").log
+      printf "${CMD} \n${TIME} \n-\n" >> ${LOGS_FOLDER}/${USER}/$(date +"%b-%Y").log
       rm $LOGS_FOLDER/tmp.log
     fi
 
